@@ -19,18 +19,18 @@ MODSDKSpring 定义了一系列的装饰器（就像您在 modMain.py 中看到�
 # 框架下载
 
 ```shell
-pip install mc-creatormc-sdkspring
+pip install mcmod-cli
 ```
 
 如果您安装了 Python2 和 Python3，您可能需要使用下方的命令去下载。
 
 ```shell
-pip2 install mc-creatormc-sdkspring
+pip2 install mcmod-cli
 ```
 
 # 示例代码
 
-本文档中的教程源码，均可在仓库中的 [example](https://github.com/CreatorMC/MODSDKSping/tree/example) 分支中查看。
+本文档中的教程源码，均可在仓库中的 [example](https://github.com/PeanutSplash/MODSDKSping/tree/example) 分支中查看。
 
 # 快速入门
 
@@ -57,7 +57,7 @@ pip2 install mc-creatormc-sdkspring
     接着输入以下命令：
 
     ```shell
-    modsdkspring init
+    mcmod init
     ```
 
     您会在命令行窗口看到如下输出：
@@ -70,7 +70,7 @@ pip2 install mc-creatormc-sdkspring
     请注意，如果您看到的是：
 
     ```shell
-    'modsdkspring' 不是内部或外部命令，也不是可运行的程序或批处理文件。
+    'mcmod' 不是内部或外部命令，也不是可运行的程序或批处理文件。
     ```
 
     说明您还没有下载并安装 MODSDKSpring。请查看本文档上方的 [框架下载](#%E6%A1%86%E6%9E%B6%E4%B8%8B%E8%BD%BD) 部分，然后重复此步骤。或者，您可能没有正确配置系统的环境变量，请自行搜索解决。
@@ -425,7 +425,7 @@ pip2 install mc-creatormc-sdkspring
 
     **通常情况下，这是您的组件不生效的首要原因，请务必牢记！**
 
-    > 有一种更加方便的导入组件的方式，并且 MODSDKSpring 框架提供了类似于 `modsdkspring init` 一样的控制台命令。强烈建议您阅读高级内容中的 [快速导入组件](#%E5%BF%AB%E9%80%9F%E5%AF%BC%E5%85%A5%E7%BB%84%E4%BB%B6) 部分。
+    > 有一种更加方便的导入组件的方式，并且 MODSDKSpring 框架提供了类似于 `mcmod init` 一样的控制台命令。强烈建议您阅读高级内容中的 [快速导入组件](#%E5%BF%AB%E9%80%9F%E5%AF%BC%E5%85%A5%E7%BB%84%E4%BB%B6) 部分。
 
 5. 运行
 
@@ -700,7 +700,7 @@ from tutorialScripts.components.server import *
 打开您的命令行窗口，或者在您的代码编辑器中打开一个终端。然后将当前位置切换到 `.../components/client` 或 `.../components/server` 文件夹下。输入下方命令：
 
 ```shell
-modsdkspring import
+mcmod import
 ```
 
 正常的话，您应该会看到以下输出：
@@ -712,10 +712,10 @@ Successfully created the __init__.py file!
 
 然后在 `.../components/client` 或 `.../components/server` 文件夹内，就会自动生成一个 `__init__.py` 文件（如果此文件已存在，会自动覆盖文件中的内容）。其中导入了此文件夹及其子文件夹内所有的类。
 
-很多时候，您在代码编辑器中打开一个终端，可能终端所在的默认位置并不是 `.../components/client` 或 `.../components/server`，并且您也不想手动切换位置。这时候，您可以使用 `modsdkspring import` 命令提供的参数 `--path`，指定路径。具体示例如下：
+很多时候，您在代码编辑器中打开一个终端，可能终端所在的默认位置并不是 `.../components/client` 或 `.../components/server`，并且您也不想手动切换位置。这时候，您可以使用 `mcmod import` 命令提供的参数 `--path`，指定路径。具体示例如下：
 
 ```shell
-modsdkspring import --path "tutorialBehaviorPack/tutorialScripts/components/client"
+mcmod import --path "tutorialBehaviorPack/tutorialScripts/components/client"
 ```
 
 上面的命令假设终端的当前位置在 `TutorialMod` 中。命令执行后，会在您指定的路径中生成一个 `__init__.py` 文件。
@@ -747,7 +747,7 @@ modsdkspring import --path "tutorialBehaviorPack/tutorialScripts/components/clie
         "commands": [
             {
                 "match": ".*\\\\components\\\\(client|server).*\\.py",
-                "cmd": "modsdkspring import --path \"${fileDirname}\"",
+                "cmd": "mcmod import --path \"${fileDirname}\"",
                 "useShortcut": false,
                 "silent": false
             }

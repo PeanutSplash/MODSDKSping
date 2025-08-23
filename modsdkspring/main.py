@@ -3,6 +3,7 @@ import re
 import sys
 import os
 import shutil
+import json
 import constants
 import utils
 
@@ -102,6 +103,28 @@ def initMOD():
     with open(os.path.join(resourcePackPath, "manifest.json"), 'w') as f:
         f.write(resourceManifestContent)
     
+    # 创建 world_behavior_packs.json 文件
+    behaviorPacksConfig = [
+        {
+            "pack_id": behaviorPackHeaderUuid,
+            "type": "Addon",
+            "version": [0, 0, 1]
+        }
+    ]
+    with open(os.path.join(modFullPath, "world_behavior_packs.json"), 'w') as f:
+        f.write(json.dumps(behaviorPacksConfig, indent=4))
+    
+    # 创建 world_resource_packs.json 文件  
+    resourcePacksConfig = [
+        {
+            "pack_id": resourcePackHeaderUuid,
+            "type": "Addon", 
+            "version": [0, 0, 1]
+        }
+    ]
+    with open(os.path.join(modFullPath, "world_resource_packs.json"), 'w') as f:
+        f.write(json.dumps(resourcePacksConfig, indent=4))
+    
     # 在行为包中创建 MODSDKSpring 框架结构
     scriptsPath = os.path.join(behaviorPackPath, scriptsFolder)
     
@@ -157,23 +180,23 @@ def initMOD():
     
     # 打印创建的项目结构
     print("\nProject structure created:")
-    print("   {}/".format(modDirName))
-    print("   ├── {}/".format(behaviorPackFolder))
-    print("   │   ├── manifest.json")
-    print("   │   ├── entities/")
-    print("   │   └── {}/".format(scriptsFolder))
-    print("   │       ├── components/")
-    print("   │       │   ├── client/")
-    print("   │       │   └── server/")
-    print("   │       ├── modCommon/")
-    print("   │       │   └── modConfig.py")
-    print("   │       ├── plugins/")
-    print("   │       ├── modMain.py")
-    print("   │       ├── {}.py".format(clientSystemName))
-    print("   │       └── {}.py".format(serverSystemName))
-    print("   └── {}/".format(resourcePackFolder))
-    print("       ├── manifest.json")
-    print("       └── textures/")
+    # print("   {}/".format(modDirName))
+    # print("   ├── {}/".format(behaviorPackFolder))
+    # print("   │   ├── manifest.json")
+    # print("   │   ├── entities/")
+    # print("   │   └── {}/".format(scriptsFolder))
+    # print("   │       ├── components/")
+    # print("   │       │   ├── client/")
+    # print("   │       │   └── server/")
+    # print("   │       ├── modCommon/")
+    # print("   │       │   └── modConfig.py")
+    # print("   │       ├── plugins/")
+    # print("   │       ├── modMain.py")
+    # print("   │       ├── {}.py".format(clientSystemName))
+    # print("   │       └── {}.py".format(serverSystemName))
+    # print("   └── {}/".format(resourcePackFolder))
+    # print("       ├── manifest.json")
+    # print("       └── textures/")
 
 def initPy(args):
     """
