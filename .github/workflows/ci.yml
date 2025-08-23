@@ -1,0 +1,86 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main ]
+    tags: [ 'v*' ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [2.7.18]
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install setuptools wheel
+
+    - name: Build package
+      run: |
+        python setup.py sdist bdist_wheel
+
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: python-package-distributions
+        path: dist/
+
+  publish:
+    name: Publish to PyPI
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs:
+    - test
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/p/mc-creatormc-sdkspring
+    permissions:
+      id-token: write
+
+    steps:
+    - name: Download all the dists
+      uses: actions/download-artifact@v3
+      with:
+        name: python-package-distributions
+        path: dist/
+
+    - name: Publish distribution to PyPI
+      uses: pypa/gh-action-pypi-publish@release/v1
+
+  release:
+    name: Create GitHub Release
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs:
+    - test
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Download all the dists
+      uses: actions/download-artifact@v3
+      with:
+        name: python-package-distributions
+        path: dist/
+
+    - name: Create Release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: dist/*
+        generate_release_notes: true
+        draft: false
+        prerelease: false
