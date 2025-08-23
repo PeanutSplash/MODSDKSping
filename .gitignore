@@ -8,3 +8,5 @@
 *.ntvs*
 *.njsproj
 *.sln
+build/
+mc_creatormc_sdkspring.egg-info/

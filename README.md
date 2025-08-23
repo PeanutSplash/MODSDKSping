@@ -42,47 +42,17 @@ pip2 install mc-creatormc-sdkspring
 
 > 本教程假设您对 MODSDK 已经有了基本的了解，理解基础的事件监听与回调机制。如果您还不了解，请参考 [官方教程](https://mc.163.com/dev/mcmanual/mc-dev/mcguide/20-%E7%8E%A9%E6%B3%95%E5%BC%80%E5%8F%91/13-%E6%A8%A1%E7%BB%84SDK%E7%BC%96%E7%A8%8B/2-Python%E8%84%9A%E6%9C%AC%E5%BC%80%E5%8F%91/0-%E8%84%9A%E6%9C%AC%E5%BC%80%E5%8F%91%E5%85%A5%E9%97%A8.html?catalog=1) 自行学习。
 
-1. 创建文件夹
+1. 准备工作
 
-    首先，创建一个如下所示的行为包结构。
+    与传统的手动创建文件夹不同，MODSDKSpring 现在会自动创建完整的 Minecraft 项目结构，包括行为包、资源包和所有必需的配置文件。
+    
+    您只需要创建一个空的项目根目录（如 `TutorialMod`），然后让工具自动完成其余工作。
 
-    ```txt
-    TutorialMod
-    └── tutorialBehaviorPack
-        ├── entities
-        └── manifest.json
-    ```
-
-    其中，manifest.json 文件内的内容如下。
-
-    ```json
-    {
-      "format_version": 2,
-      "header": {
-        "name": "MODSDKSpring教程行为包",
-        "description": "作者:创造者MC",
-        "uuid": "a44ca707-044d-47c4-ab75-d0568eef5d00",
-        "version": [1 ,0 ,0],
-        "min_engine_version": [1 ,18 ,0]
-      },
-      "modules": [
-        {
-          "description": "作者:创造者MC",
-          "uuid": "627b21f9-f6e5-44f1-82d3-4f3249606e20",
-          "version": [1,0,0],
-          "type": "data"
-        }
-      ]
-    }
-    ```
-
-2. 自动生成 Mod 结构
+2. 自动生成 Minecraft 项目结构
    
-    MODSDKSpring 提供了命令行形式的自动生成工具，能够自动生成包含 MODSDKSpring 的初始的 Mod 结构。
+    MODSDKSpring 提供了命令行形式的自动生成工具，能够自动生成包含完整 Minecraft 项目结构（包括行为包、资源包和 MODSDKSpring 框架）的初始项目。
 
-    如果您的电脑是 Windows 系统，在 `TutorialMod/tutorialBehaviorPack` 文件夹内的地址栏上输入 `cmd` 并按下 `Enter` 键，即可在当前位置打开一个命令行窗口。
-
-    ![打开命令行窗口截图](https://github.com/user-attachments/assets/e109fa00-b301-47ed-a575-74043327ed54)
+    如果您的电脑是 Windows 系统，在项目根目录（如 `TutorialMod` 文件夹）内的地址栏上输入 `cmd` 并按下 `Enter` 键，即可在当前位置打开一个命令行窗口。
 
     接着输入以下命令：
 
@@ -94,7 +64,7 @@ pip2 install mc-creatormc-sdkspring
 
     ```shell
     Start initializing your Mod...
-    Please enter the name of the Mod folder:
+    Please enter the Mod name (will be used as namespace and folder name):
     ```
 
     请注意，如果您看到的是：
@@ -105,60 +75,53 @@ pip2 install mc-creatormc-sdkspring
 
     说明您还没有下载并安装 MODSDKSpring。请查看本文档上方的 [框架下载](#%E6%A1%86%E6%9E%B6%E4%B8%8B%E8%BD%BD) 部分，然后重复此步骤。或者，您可能没有正确配置系统的环境变量，请自行搜索解决。
 
-    接下来按照提示 Please enter the name of the Mod folder（请输入 Mod 文件夹的名称），输入以下名称后按 `Enter` 键。
-
-    ```shell
-    tutorialScripts
-    ```
-
-    接着出现提示 Please enter the Mod name, which will serve as the namespace registered to the engine（请输入Mod名称，该名称将作为注册到引擎的命名空间），继续输入以下内容后按 `Enter` 键。
+    接下来按照提示输入 Mod 名称，这个名称将用作项目文件夹名、命名空间以及各种系统名称的基础。输入以下内容后按 `Enter` 键：
 
     ```shell
     TutorialMod
     ```
 
-    接着出现提示 Please enter the client system name, which will serve as the class name for the client system（请输入客户端系统名称，该名称将作为客户端系统的类名），继续输入以下内容后按 `Enter` 键。
-
-    ```shell
-    TutorialClientSystem
-    ```
-
-    接着出现提示 Please enter the server system name, which will serve as the class name for the server system（请输入服务端系统名称，该名称将作为服务端系统的类名），继续输入以下内容后按 `Enter` 键。
-
-    ```shell
-    TutorialServerSystem
-    ```
+    系统将自动生成以下信息：
+    - 项目文件夹名：TutorialMod
+    - 客户端系统名：TutorialModClientSystem
+    - 服务端系统名：TutorialModServerSystem
+    - 脚本文件夹名：TutorialModScripts
+    - 自动生成的行为包和资源包文件夹名
+    - 自动生成的 UUIDs
 
     最后出现提示 Created successfully!
 
-    ![命令行窗口](https://github.com/user-attachments/assets/253378a0-4468-466b-965c-be7961f600a1)
-
-    此时查看文件夹结构，您应该得到了如下所示的结构：
+    此时查看文件夹结构，您应该得到了类似如下所示的完整 Minecraft 项目结构：
 
     ```txt
-    TutorialMod
-    └── tutorialBehaviorPack
-        ├── entities
-        ├── tutorialScripts
-        │   ├── components
-        │   │   ├── client
-        │   │   │   └── __init__.py
-        │   │   ├── server
-        │   │   │   └── __init__.py
-        │   │   └── __init__.py
-        │   ├── modCommon
-        │   │   ├── __init__.py
-        │   │   └── modConfig.py
-        │   ├── plugins
-        │   │   ├── MODSDKSpring
-        │   │   │   └── ...
-        │   │   └── __init__.py
-        │   ├── __init__.py
-        │   ├── modMain.py
-        │   ├── TutorialClientSystem.py
-        │   └── TutorialServerSystem.py
-        └── manifest.json
+    TutorialMod/
+    ├── behavior_pack_abc12345/
+    │   ├── manifest.json
+    │   ├── entities/
+    │   └── TutorialModScripts/
+    │       ├── components/
+    │       │   ├── client/
+    │       │   │   └── __init__.py
+    │       │   ├── server/
+    │       │   │   └── __init__.py
+    │       │   └── __init__.py
+    │       ├── modCommon/
+    │       │   ├── __init__.py
+    │       │   └── modConfig.py
+    │       ├── plugins/
+    │       │   ├── MODSDKSpring/
+    │       │   │   └── ...
+    │       │   └── __init__.py
+    │       ├── __init__.py
+    │       ├── modMain.py
+    │       ├── TutorialModClientSystem.py
+    │       └── TutorialModServerSystem.py
+    └── resource_pack_xyz98765/
+        ├── manifest.json
+        └── textures/
     ```
+
+    其中 `behavior_pack_abc12345` 和 `resource_pack_xyz98765` 是自动生成的随机文件夹名，每次运行命令都会生成不同的名称。
 
     现在，这个 Mod 已经可以直接放入游戏中运行了。
 
@@ -206,7 +169,7 @@ pip2 install mc-creatormc-sdkspring
 
 4. 监听事件
 
-    打开 TutorialServerSystem.py 文件，添加以下代码：
+    打开行为包中脚本文件夹内的 TutorialModServerSystem.py 文件（路径类似 `TutorialMod/behavior_pack_xxx/TutorialModScripts/TutorialModServerSystem.py`），添加以下代码：
 
     ```python
     @ListenEvent.Server(eventName="ServerChatEvent")
@@ -240,12 +203,12 @@ pip2 install mc-creatormc-sdkspring
     # -*- coding: utf-8 -*-
 
     import mod.server.extraServerApi as serverApi
-    from tutorialScripts.plugins.MODSDKSpring.core.ListenEvent import ListenEvent
+    from TutorialModScripts.plugins.MODSDKSpring.core.ListenEvent import ListenEvent
     ServerSystem = serverApi.GetServerSystemCls()
     compFactory = serverApi.GetEngineCompFactory()
 
     @ListenEvent.InitServer
-    class TutorialServerSystem(ServerSystem):
+    class TutorialModServerSystem(ServerSystem):
 
         def __init__(self, namespace, systemName):
             pass

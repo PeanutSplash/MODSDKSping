@@ -4,6 +4,7 @@ import sys
 import os
 import shutil
 import constants
+import utils
 
 # 获取当前包的根目录
 packagePath = os.path.dirname(__file__)
@@ -27,35 +28,112 @@ def main():
 
 def initMOD():
     """
-    初始化 MOD 相关文件和文件夹
+    初始化 MOD 相关文件和文件夹（集成 Minecraft 项目结构）
     """
-    # 提醒用户，输入要创建的 mod 文件夹的名称
-    modDirName = raw_input("Please enter the name of the Mod folder:\n").strip()
-    # 输入 Mod 名称（命名空间）
-    modName = raw_input("Please enter the Mod name, which will serve as the namespace registered to the engine:\n").strip()
-    # 输入客户端系统名称
-    clientSystemName = raw_input("Please enter the client system name, which will serve as the class name for the client system:\n").strip()
-    # 输入服务端系统名称
-    serverSystemName = raw_input("Please enter the server system name, which will serve as the class name for the server system:\n").strip()
-    # 得到 Mod 的绝对路径
+    # 只需要用户输入 Mod 名称，其他参数自动构造
+    modName = raw_input("Please enter the Mod name (will be used as namespace and folder name):\n").strip()
+    
+    # 自动构造其他参数
+    modDirName = modName  # 使用 mod 名称作为文件夹名称
+    clientSystemName = modName + "ClientSystem"
+    serverSystemName = modName + "ServerSystem"
+    scriptsFolder = modName + "Scripts"
+    
+    # 生成UUIDs和随机文件夹名
+    behaviorPackHeaderUuid = utils.generate_uuid()
+    behaviorPackModuleUuid = utils.generate_uuid()
+    resourcePackHeaderUuid = utils.generate_uuid()
+    resourcePackModuleUuid = utils.generate_uuid()
+    behaviorPackFolder = "behavior_pack_" + utils.generate_random_string(8)
+    resourcePackFolder = "resource_pack_" + utils.generate_random_string(8)
+    
+    # 打印生成的信息
+    print("Generated project information:")
+    print("   Mod Name: {}".format(modName))
+    print("   Client System: {}".format(clientSystemName))
+    print("   Server System: {}".format(serverSystemName))
+    print("   Scripts Folder: {}".format(scriptsFolder))
+    print("   Behavior Pack: {}".format(behaviorPackFolder))
+    print("   Resource Pack: {}".format(resourcePackFolder))
+    print("Generated UUIDs:")
+    print("   Behavior Pack Header: {}".format(behaviorPackHeaderUuid))
+    print("   Behavior Pack Module: {}".format(behaviorPackModuleUuid))
+    print("   Resource Pack Header: {}".format(resourcePackHeaderUuid))
+    print("   Resource Pack Module: {}".format(resourcePackModuleUuid))
+    
+    # 得到项目的绝对路径
     modFullPath = os.path.join(os.getcwd(), modDirName)
+    behaviorPackPath = os.path.join(modFullPath, behaviorPackFolder)
+    resourcePackPath = os.path.join(modFullPath, resourcePackFolder)
 
-    # 复制模板文件
-    shutil.copytree(os.path.join(packagePath, constants.TEMPLATE_DIR_NAME), modFullPath)
-
-    # 复制 MODSDKSpring 框架
-    shutil.copytree(os.path.join(packagePath, constants.PLUGINS_DIR_NAME), modFullPath + os.sep + constants.PLUGINS_DIR_NAME)
-
-    # 修改 ClientSystem.txt 文件名
-    clientSystemFilePath = os.path.join(modFullPath, constants.CLIENT_SYSTEM_FILE_PATH)
-    os.rename(clientSystemFilePath,  os.path.join(modFullPath, clientSystemName + '.txt'))
+    # 创建项目目录结构
+    if not os.path.exists(modFullPath):
+        os.makedirs(modFullPath)
     
-    # 修改 ServerSystem.txt 文件名
-    serverSystemFilePath = os.path.join(modFullPath, constants.SERVER_SYSTEM_FILE_PATH)
-    os.rename(serverSystemFilePath,  os.path.join(modFullPath, serverSystemName + '.txt'))
+    # 创建行为包目录结构
+    os.makedirs(behaviorPackPath)
+    os.makedirs(os.path.join(behaviorPackPath, "entities"))
     
-    # 替换模板文件中定义的占位符，并把所有 .txt 文件改为 .py
-    for root, dirs, files in os.walk(modFullPath):
+    # 创建资源包目录结构  
+    os.makedirs(resourcePackPath)
+    os.makedirs(os.path.join(resourcePackPath, "textures"))
+    
+    # 创建 .gitkeep 文件
+    with open(os.path.join(behaviorPackPath, "entities", ".gitkeep"), 'w') as f:
+        f.write("")
+    with open(os.path.join(resourcePackPath, "textures", ".gitkeep"), 'w') as f:
+        f.write("")
+    
+    # 复制并处理行为包 manifest
+    behaviorManifestTemplate = os.path.join(packagePath, constants.TEMPLATE_DIR_NAME, "manifest_behavior.txt")
+    with open(behaviorManifestTemplate, 'r') as f:
+        behaviorManifestContent = f.read()
+    behaviorManifestContent = behaviorManifestContent.replace(constants.BEHAVIOR_PACK_HEADER_UUID, behaviorPackHeaderUuid)
+    behaviorManifestContent = behaviorManifestContent.replace(constants.BEHAVIOR_PACK_MODULE_UUID, behaviorPackModuleUuid)
+    with open(os.path.join(behaviorPackPath, "manifest.json"), 'w') as f:
+        f.write(behaviorManifestContent)
+    
+    # 复制并处理资源包 manifest
+    resourceManifestTemplate = os.path.join(packagePath, constants.TEMPLATE_DIR_NAME, "manifest_resource.txt")
+    with open(resourceManifestTemplate, 'r') as f:
+        resourceManifestContent = f.read()
+    resourceManifestContent = resourceManifestContent.replace(constants.RESOURCE_PACK_HEADER_UUID, resourcePackHeaderUuid)
+    resourceManifestContent = resourceManifestContent.replace(constants.RESOURCE_PACK_MODULE_UUID, resourcePackModuleUuid)
+    with open(os.path.join(resourcePackPath, "manifest.json"), 'w') as f:
+        f.write(resourceManifestContent)
+    
+    # 在行为包中创建 MODSDKSpring 框架结构
+    scriptsPath = os.path.join(behaviorPackPath, scriptsFolder)
+    
+    # 复制模板文件到脚本文件夹
+    shutil.copytree(os.path.join(packagePath, constants.TEMPLATE_DIR_NAME), scriptsPath)
+    
+    # 复制 MODSDKSpring 框架到脚本文件夹的 plugins 目录
+    pluginsPath = os.path.join(scriptsPath, constants.PLUGINS_DIR_NAME)
+    if os.path.exists(os.path.join(packagePath, constants.PLUGINS_DIR_NAME)):
+        if os.path.exists(pluginsPath):
+            shutil.rmtree(pluginsPath)
+        shutil.copytree(os.path.join(packagePath, constants.PLUGINS_DIR_NAME), pluginsPath)
+    
+    # 删除不需要的 manifest 模板文件
+    manifestBehaviorFile = os.path.join(scriptsPath, "manifest_behavior.txt")
+    if os.path.exists(manifestBehaviorFile):
+        os.remove(manifestBehaviorFile)
+    manifestResourceFile = os.path.join(scriptsPath, "manifest_resource.txt")
+    if os.path.exists(manifestResourceFile):
+        os.remove(manifestResourceFile)
+    
+    # 修改 ClientSystem.txt 和 ServerSystem.txt 文件名
+    clientSystemFilePath = os.path.join(scriptsPath, constants.CLIENT_SYSTEM_FILE_PATH)
+    if os.path.exists(clientSystemFilePath):
+        os.rename(clientSystemFilePath, os.path.join(scriptsPath, clientSystemName + '.txt'))
+    
+    serverSystemFilePath = os.path.join(scriptsPath, constants.SERVER_SYSTEM_FILE_PATH)
+    if os.path.exists(serverSystemFilePath):
+        os.rename(serverSystemFilePath, os.path.join(scriptsPath, serverSystemName + '.txt'))
+    
+    # 替换模板文件中的占位符，并把所有 .txt 文件改为 .py
+    for root, dirs, files in os.walk(scriptsPath):
         for file in files:
             if not file.endswith('.txt'):
                 continue
@@ -69,11 +147,33 @@ def initMOD():
                 fstr = fstr.replace(constants.MOD_DIR_NAME, modDirName)
                 fstr = fstr.replace(constants.CLIENT_SYSTEM_NAME, clientSystemName)
                 fstr = fstr.replace(constants.SERVER_SYSTEM_NAME, serverSystemName)
+                fstr = fstr.replace(constants.SCRIPTS_FOLDER, scriptsFolder)
                 with open(filePath, 'w') as f:
                     f.write(fstr)
             
             # 修改文件扩展名
-            os.rename(filePath, os.path.join(root, file[:file.rfind('.')] + '.py'))
+            newFilePath = os.path.join(root, file[:file.rfind('.')] + '.py')
+            os.rename(filePath, newFilePath)
+    
+    # 打印创建的项目结构
+    print("\nProject structure created:")
+    print("   {}/".format(modDirName))
+    print("   ├── {}/".format(behaviorPackFolder))
+    print("   │   ├── manifest.json")
+    print("   │   ├── entities/")
+    print("   │   └── {}/".format(scriptsFolder))
+    print("   │       ├── components/")
+    print("   │       │   ├── client/")
+    print("   │       │   └── server/")
+    print("   │       ├── modCommon/")
+    print("   │       │   └── modConfig.py")
+    print("   │       ├── plugins/")
+    print("   │       ├── modMain.py")
+    print("   │       ├── {}.py".format(clientSystemName))
+    print("   │       └── {}.py".format(serverSystemName))
+    print("   └── {}/".format(resourcePackFolder))
+    print("       ├── manifest.json")
+    print("       └── textures/")
 
 def initPy(args):
     """
@@ -120,3 +220,4 @@ def initPy(args):
     with open(os.path.join(path, '__init__.py'), 'w') as f:
         f.write(content)
     print("Successfully created the __init__.py file!")
+
