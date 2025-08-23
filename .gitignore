@@ -10,3 +10,5 @@
 *.sln
 build/
 mc_creatormc_sdkspring.egg-info/
+dist/
+mcmod_cli.egg-info/
