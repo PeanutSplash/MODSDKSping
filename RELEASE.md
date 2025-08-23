@@ -76,10 +76,10 @@ python scripts/release.py --version 1.0.1 --dry-run
 
 为了自动发布到 PyPI，需要配置 Trusted Publishers：
 
-1. 访问 [PyPI 项目管理页面](https://pypi.org/manage/project/mc-creatormc-sdkspring/)
+1. 访问 [PyPI 项目管理页面](https://pypi.org/manage/project/mcmod-cli/)
 2. 进入 "Publishing" 选项卡
 3. 添加 Trusted Publisher：
-   - **Owner**: `CreatorMC`
+   - **Owner**: `Autor`
    - **Repository**: `MODSDKSping`
    - **Workflow**: `ci.yml`
    - **Environment**: `pypi`

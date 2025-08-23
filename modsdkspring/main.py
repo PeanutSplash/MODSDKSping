@@ -24,7 +24,7 @@ def main():
         else:
             print("Incorrect sub command.")
     else:
-        print("Only modsdkspring was entered, please enter the sub command.")
+        print("Only mcmod was entered, please enter the sub command.")
 
 def initMOD():
     """
@@ -191,7 +191,7 @@ def initPy(args):
         # 取 --path 后的路径
         path = args[3]
     else:
-        print("Usage: modsdkspring import --path \"path_to_directory\"")
+        print("Usage: mcmod import --path \"path_to_directory\"")
         return
     
     pattern = r'class\s+([a-zA-Z][a-zA-Z0-9_]*)(\(.*\))?\s*:'

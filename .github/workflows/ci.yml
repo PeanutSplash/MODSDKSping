@@ -45,7 +45,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: pypi
-      url: https://pypi.org/p/mc-creatormc-sdkspring
+      url: https://pypi.org/p/mcmod-cli
     permissions:
       id-token: write
 
