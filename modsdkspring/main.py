@@ -146,14 +146,13 @@ def initMOD():
     if os.path.exists(manifestResourceFile):
         os.remove(manifestResourceFile)
     
-    # 修改 ClientSystem.txt 和 ServerSystem.txt 文件名和位置（直接放在scriptsPath中）
-    clientSystemFilePath = os.path.join(scriptsPath, constants.CLIENT_SYSTEM_FILE_PATH)
-    if os.path.exists(clientSystemFilePath):
-        os.rename(clientSystemFilePath, os.path.join(scriptsPath, 'Main' + clientSystemName + '.py'))
-    
-    serverSystemFilePath = os.path.join(scriptsPath, constants.SERVER_SYSTEM_FILE_PATH)
-    if os.path.exists(serverSystemFilePath):
-        os.rename(serverSystemFilePath, os.path.join(scriptsPath, 'Main' + serverSystemName + '.py'))
+    # 创建 ClientSystem 和 ServerSystem 子文件夹
+    clientSystemDir = os.path.join(scriptsPath, "ClientSystem")
+    serverSystemDir = os.path.join(scriptsPath, "ServerSystem")
+    if not os.path.exists(clientSystemDir):
+        os.makedirs(clientSystemDir)
+    if not os.path.exists(serverSystemDir):
+        os.makedirs(serverSystemDir)
     
     # 替换模板文件中的占位符，并把所有 .txt 文件改为 .py
     for root, dirs, files in os.walk(scriptsPath):
@@ -174,8 +173,17 @@ def initMOD():
                 with open(filePath, 'w') as f:
                     f.write(fstr)
             
-            # 修改文件扩展名
-            newFilePath = os.path.join(root, file[:file.rfind('.')] + '.py')
+            # 修改文件扩展名并处理特殊文件的位置
+            fileName = file[:file.rfind('.')]
+            
+            # 特殊处理 ClientSystem 和 ServerSystem 文件
+            if file == constants.CLIENT_SYSTEM_FILE_PATH:
+                newFilePath = os.path.join(clientSystemDir, 'Main' + clientSystemName + '.py')
+            elif file == constants.SERVER_SYSTEM_FILE_PATH:
+                newFilePath = os.path.join(serverSystemDir, 'Main' + serverSystemName + '.py')
+            else:
+                newFilePath = os.path.join(root, fileName + '.py')
+            
             os.rename(filePath, newFilePath)
     
     # 打印创建的项目结构
