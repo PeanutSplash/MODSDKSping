@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import mod.client.extraClientApi as clientApi
-from [MOD_DIR_NAME].plugins.MODSDKSpring.core.ListenEvent import ListenEvent
+from [SCRIPTS_FOLDER].plugins.MODSDKSpring.core.ListenEvent import ListenEvent
 ClientSystem = clientApi.GetClientSystemCls()
 compFactory = clientApi.GetEngineCompFactory()
 
