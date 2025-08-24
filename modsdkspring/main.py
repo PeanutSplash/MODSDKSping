@@ -146,22 +146,14 @@ def initMOD():
     if os.path.exists(manifestResourceFile):
         os.remove(manifestResourceFile)
     
-    # 创建 ClientSystem 和 ServerSystem 目录结构
-    clientSystemDir = os.path.join(behaviorPackPath, modDirName, "ClientSystem")
-    serverSystemDir = os.path.join(behaviorPackPath, modDirName, "ServerSystem")
-    if not os.path.exists(clientSystemDir):
-        os.makedirs(clientSystemDir)
-    if not os.path.exists(serverSystemDir):
-        os.makedirs(serverSystemDir)
-    
-    # 修改 ClientSystem.txt 和 ServerSystem.txt 文件名和位置
+    # 修改 ClientSystem.txt 和 ServerSystem.txt 文件名和位置（直接放在scriptsPath中）
     clientSystemFilePath = os.path.join(scriptsPath, constants.CLIENT_SYSTEM_FILE_PATH)
     if os.path.exists(clientSystemFilePath):
-        os.rename(clientSystemFilePath, os.path.join(clientSystemDir, 'Main' + clientSystemName + '.txt'))
+        os.rename(clientSystemFilePath, os.path.join(scriptsPath, 'Main' + clientSystemName + '.py'))
     
     serverSystemFilePath = os.path.join(scriptsPath, constants.SERVER_SYSTEM_FILE_PATH)
     if os.path.exists(serverSystemFilePath):
-        os.rename(serverSystemFilePath, os.path.join(serverSystemDir, 'Main' + serverSystemName + '.txt'))
+        os.rename(serverSystemFilePath, os.path.join(scriptsPath, 'Main' + serverSystemName + '.py'))
     
     # 替换模板文件中的占位符，并把所有 .txt 文件改为 .py
     for root, dirs, files in os.walk(scriptsPath):
