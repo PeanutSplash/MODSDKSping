@@ -154,6 +154,12 @@ def initMOD():
     if not os.path.exists(serverSystemDir):
         os.makedirs(serverSystemDir)
     
+    # 创建 __init__.py 文件
+    with open(os.path.join(clientSystemDir, "__init__.py"), 'w') as f:
+        f.write("")
+    with open(os.path.join(serverSystemDir, "__init__.py"), 'w') as f:
+        f.write("")
+    
     # 替换模板文件中的占位符，并把所有 .txt 文件改为 .py
     for root, dirs, files in os.walk(scriptsPath):
         for file in files:
