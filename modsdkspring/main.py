@@ -149,8 +149,10 @@ def initMOD():
     # 创建 ClientSystem 和 ServerSystem 目录结构
     clientSystemDir = os.path.join(behaviorPackPath, modDirName, "ClientSystem")
     serverSystemDir = os.path.join(behaviorPackPath, modDirName, "ServerSystem")
-    os.makedirs(clientSystemDir, exist_ok=True)
-    os.makedirs(serverSystemDir, exist_ok=True)
+    if not os.path.exists(clientSystemDir):
+        os.makedirs(clientSystemDir)
+    if not os.path.exists(serverSystemDir):
+        os.makedirs(serverSystemDir)
     
     # 修改 ClientSystem.txt 和 ServerSystem.txt 文件名和位置
     clientSystemFilePath = os.path.join(scriptsPath, constants.CLIENT_SYSTEM_FILE_PATH)
