@@ -125,6 +125,14 @@ def initMOD():
     with open(os.path.join(modFullPath, "world_resource_packs.json"), 'w') as f:
         f.write(json.dumps(resourcePacksConfig, indent=4))
     
+    # 创建 studio.json 文件
+    studioConfig = {
+        "EditName": modName,
+        "NameSpace": modName
+    }
+    with open(os.path.join(modFullPath, "studio.json"), 'w') as f:
+        f.write(json.dumps(studioConfig, indent=2))
+    
     # 在行为包中创建 MODSDKSpring 框架结构
     scriptsPath = os.path.join(behaviorPackPath, scriptsFolder)
     
@@ -184,9 +192,9 @@ def initMOD():
             
             # 特殊处理 ClientSystem 和 ServerSystem 文件
             if file == constants.CLIENT_SYSTEM_FILE_PATH:
-                newFilePath = os.path.join(clientSystemDir, 'Main' + clientSystemName + '.py')
+                newFilePath = os.path.join(clientSystemDir, 'MainClientSystem' + '.py')
             elif file == constants.SERVER_SYSTEM_FILE_PATH:
-                newFilePath = os.path.join(serverSystemDir, 'Main' + serverSystemName + '.py')
+                newFilePath = os.path.join(serverSystemDir, 'MainServerSystem' + '.py')
             else:
                 newFilePath = os.path.join(root, fileName + '.py')
             
