@@ -12,3 +12,7 @@ build/
 mc_creatormc_sdkspring.egg-info/
 dist/
 mcmod_cli.egg-info/
+
+#vibe coding
+.claude/
+claude.md
