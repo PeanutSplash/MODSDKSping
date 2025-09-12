@@ -1203,4 +1203,156 @@ class ACopyServerComponent(object):
           self.cClientComponent = cClientComponent
   ```
 
+# 开发环境测试指南
+
+> 本部分内容面向MODSDKSpring框架的贡献者和开发者，如果您只是使用框架开发MOD，无需阅读此部分。
+
+## 项目架构
+
+MODSDKSpring采用模块化架构，主要包含以下组件：
+
+- **CLI命令系统** (`modsdkspring/cli/`) - 处理命令行交互
+- **项目生成器** (`modsdkspring/generators/`) - 负责创建MOD项目结构  
+- **配置管理** (`modsdkspring/config/`) - 管理项目配置信息
+- **工具模块** (`modsdkspring/utils/`) - 提供通用工具函数
+- **模板系统** (`modsdkspring/templates/`) - 存储项目模板文件
+
+## 测试环境准备
+
+### 1. 克隆项目
+```shell
+git clone <repository-url>
+cd MODSDKSping
+```
+
+### 2. 安装Python依赖
+项目支持Python 2.7和Python 3.x，推荐在虚拟环境中测试：
+
+```shell
+# Python 3
+python -m venv test_env
+source test_env/bin/activate  # Windows: test_env\Scripts\activate
+
+# Python 2.7
+virtualenv test_env
+source test_env/bin/activate  # Windows: test_env\Scripts\activate
+```
+
+## 测试方法
+
+### 1. 导入模块测试
+验证所有模块可以正确导入：
+
+```shell
+python -c "from modsdkspring.main import main, initMOD, initPy; print('所有主要函数导入成功')"
+```
+
+### 2. CLI命令测试
+
+#### 测试帮助信息
+```shell
+python -c "from modsdkspring.main import main; import sys; sys.argv=['mcmod']; main()"
+```
+
+#### 测试init命令帮助
+```shell  
+python -c "from modsdkspring.main import main; import sys; sys.argv=['mcmod', 'init', '--help']; main()"
+```
+
+#### 测试import命令帮助
+```shell
+python -c "from modsdkspring.main import main; import sys; sys.argv=['mcmod', 'import', '--help']; main()"
+```
+
+### 3. 功能测试
+
+#### 测试import功能
+```shell
+# 创建测试目录
+mkdir test_dir
+echo "class TestClass: pass" > test_dir/test_file.py
+
+# 执行import命令
+python -c "from modsdkspring.main import main; import sys; sys.argv=['mcmod', 'import', '--path', 'test_dir']; main()"
+
+# 验证生成的__init__.py文件
+cat test_dir/__init__.py
+
+# 清理
+rm -rf test_dir
+```
+
+#### 测试向后兼容性
+```shell
+# 创建测试目录  
+mkdir legacy_test
+echo "class LegacyClass: pass" > legacy_test/legacy.py
+
+# 测试legacy函数
+python -c "from modsdkspring.main import initPy; initPy(['python', 'initPy', '--path', 'legacy_test'])"
+
+# 验证结果
+cat legacy_test/__init__.py
+
+# 清理
+rm -rf legacy_test
+```
+
+## 代码质量检查
+
+### 1. 语法检查
+```shell
+# 检查Python语法
+python -m py_compile modsdkspring/main.py
+python -m py_compile modsdkspring/cli/*.py
+python -m py_compile modsdkspring/generators/*.py
+```
+
+### 2. 导入检查
+验证所有相对导入已正确转换为绝对导入：
+```shell
+grep -r "from \." modsdkspring/ && echo "发现相对导入！需要修复" || echo "无相对导入问题"
+```
+
+### 3. Python 2兼容性检查
+确保没有Python 3特有的语法：
+```shell
+# 检查f-string
+grep -r 'f"' modsdkspring/ && echo "发现f-string！需要修复" || echo "无f-string问题"
+
+# 检查编码参数
+grep -r "encoding=" modsdkspring/ && echo "发现encoding参数！可能需要修复" || echo "无encoding参数问题"
+```
+
+## 常见问题排查
+
+### 导入错误
+如果遇到`ImportError: No module named xxx`错误：
+1. 确认从项目根目录运行测试命令
+2. 检查Python路径设置
+3. 验证所有相对导入已转换为绝对导入
+
+### 语法错误
+如果遇到`SyntaxError: invalid syntax`错误：
+1. 检查是否有f-string语法残留
+2. 确认所有文件使用正确的Python 2/3兼容语法
+3. 验证文件编码设置
+
+### 功能异常
+如果命令执行异常：
+1. 检查输入参数格式
+2. 确认目标路径存在且可访问
+3. 查看详细错误信息定位问题
+
+## 贡献指南
+
+提交代码前请确保：
+1. ✅ 所有测试用例通过
+2. ✅ 保持向后兼容性
+3. ✅ Python 2/3双重兼容
+4. ✅ 无语法错误和导入错误
+5. ✅ 遵循现有代码风格和架构模式
+
+这样可以确保框架的稳定性和用户体验的一致性。
+
   
