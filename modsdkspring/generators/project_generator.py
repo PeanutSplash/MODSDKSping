@@ -166,6 +166,12 @@ class ProjectGenerator:
                     f.write("")
             copytree_compat(framework_template_path, os.path.join(plugins_path, FRAMEWORK_PLUGIN_DIR_NAME))
 
+        # 复制 CrossEndCommunication 模板
+        cross_end_template_path = os.path.join(self.templates_path, "framework", "CrossEndCommunication")
+        if os.path.exists(cross_end_template_path):
+            makedirs_compat(plugins_path)
+            copytree_compat(cross_end_template_path, os.path.join(plugins_path, "CrossEndCommunication"))
+
 
 class ProjectInfo:
     """项目信息类"""
