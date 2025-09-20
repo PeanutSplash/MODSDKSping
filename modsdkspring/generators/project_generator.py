@@ -176,7 +176,12 @@ class ProjectGenerator:
         grape_settings_template_path = os.path.join(self.templates_path, "framework", "GrapeSettings")
         if os.path.exists(grape_settings_template_path):
             makedirs_compat(plugins_path)
-            copytree_compat(grape_settings_template_path, os.path.join(plugins_path, "GrapeSettings"))
+            TemplateEngine.render_directory(
+                grape_settings_template_path,
+                os.path.join(plugins_path, "GrapeSettings"),
+                info.config.get_template_vars(),
+                exclude_patterns=[r".*\.pyc$"]
+            )
 
 class ProjectInfo:
     """项目信息类"""

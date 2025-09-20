@@ -16,6 +16,7 @@ class [MOD_NAME](object):
     def [MOD_NAME]ServerInit(self):
         logger.info("===== init %s server =====", modConfig.SERVER_SYSTEM_NAME)
         serverApi.RegisterSystem(modConfig.MOD_NAMESPACE, modConfig.SERVER_SYSTEM_NAME, modConfig.SERVER_SYSTEM_CLS_PATH)
+        serverApi.RegisterSystem(modConfig.MOD_NAMESPACE, modConfig.SERVER_SYSTEM_NAME, modConfig.SERVER_SYSTEM_CLS_PATH)
 
     @Mod.DestroyServer()
     def [MOD_NAME]ServerDestroy(self):
@@ -25,7 +26,9 @@ class [MOD_NAME](object):
     def [MOD_NAME]ClientInit(self):
         logger.info("===== init %s client =====", modConfig.CLIENT_SYSTEM_NAME)
         clientApi.RegisterSystem(modConfig.MOD_NAMESPACE, modConfig.CLIENT_SYSTEM_NAME, modConfig.CLIENT_SYSTEM_CLS_PATH)
-    
+        if modConfig.REG_CONFIG == True:
+            clientApi.RegisterSystem(modConfig.MOD_NAMESPACE, modConfig.CONFIG_SYSTEM_NAME, modConfig.CONFIG_SYSTEM_CLS_PATH)
+            
     @Mod.DestroyClient()
     def [MOD_NAME]ClientDestroy(self):
         logger.info("===== destroy %s client =====", modConfig.CLIENT_SYSTEM_NAME)

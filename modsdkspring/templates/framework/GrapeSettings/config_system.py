@@ -56,9 +56,9 @@ class ConfigSystem(ClientSystem):
         logger.info('ConfigSystem: UI 初始化完成，开始注册配置')
 
         try:
-            self.register_config(grape_settings_config.borrowing_arrows_config)
+            self.register_config(grape_settings_config.[MOD_NAME]_config)
 
-            config_name = grape_settings_config.borrowing_arrows_config.get('config_name', '')
+            config_name = grape_settings_config.[MOD_NAME]_config.get('config_name', '')
             if config_name:
                 self.game.AddTimer(UI_INIT_DELAY, self.try_proxy_config_screen, config_name)
             else:

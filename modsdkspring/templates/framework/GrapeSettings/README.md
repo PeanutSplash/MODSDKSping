@@ -16,7 +16,7 @@
 - `proxy/esc_ui_proxy.py`：将“模组设置”按钮挂接到 ESC 菜单。
 
 ## 工作流程
-1. `ConfigSystem` 在 `UiInitFinished` 事件后读取 `grape_settings_config.borrowing_arrows_config` 并写入共享注册表。
+1. `ConfigSystem` 在 `UiInitFinished` 事件后读取 `grape_settings_config.[MOD_NAME]_config` 并写入共享注册表。
 2. 当当前模组配置的 `priority` 为最小值时，系统会注册 `esc_ui_proxy` 并在暂停菜单动态补全按钮与主界面 UI。
 3. 玩家点击 ESC 中的“模组设置”按钮，会打开 `GrapeSettingsScreen`，读取注册表并生成配置列表。
 4. 选择具体配置项时，会根据配置提供的 `mod_name_space` 和 `ui_namespace` 切换到对应的详细界面。
@@ -56,7 +56,7 @@ new_mod_config = {
 
 ### 4. 继承 `GrapeSettingsScreen` 实现详情界面
 - 创建自定义类继承 `screen/grape_settings_screen.py` 中的 `GrapeSettingsScreen`，在 `Create` 中捕获控件、绑定事件。
-- 使用 `@ViewBinder.binding` 装饰器可快速绑定切换、按钮等交互。参考 `modCommon/GrapeSettings/borrowing_arrows_config.py`。
+- 使用 `@ViewBinder.binding` 装饰器可快速绑定切换、按钮等交互。参考 `modCommon/GrapeSettings/[MOD_NAME]_config.py`。
 - 如需记忆最后一次打开的配置按钮，可调用 `EventHandler.set_glowing_button` 来同步初始高亮项。
 
 ### 5. 同步服务器配置（可选）
@@ -70,5 +70,5 @@ new_mod_config = {
 
 ## 相关资源
 - UI：`resource_pack_2WQkaYY2/ui/grape_settings.json`
-- 配置示例：`behavior_pack_rWQthfal/borrowing_arrowsScripts/modCommon/GrapeSettings/borrowing_arrows_config.py`
-- 服务器实现：`behavior_pack_rWQthfal/borrowing_arrowsScripts/ServerSystem/ConfigServerSystem.py`
+- 配置示例：`behavior_pack_rWQthfal/[MOD_NAME]Scripts/modCommon/GrapeSettings/[MOD_NAME]_config.py`
+- 服务器实现：`behavior_pack_rWQthfal/[MOD_NAME]Scripts/ServerSystem/ConfigServerSystem.py`

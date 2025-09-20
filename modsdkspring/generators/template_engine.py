@@ -41,9 +41,9 @@ class TemplateEngine:
         """递归渲染整个目录"""
         if not os.path.exists(template_dir):
             raise FileNotFoundError("Template directory not found: {}".format(template_dir))
-        
+
         exclude_patterns = exclude_patterns or []
-        
+
         for root, dirs, files in os.walk(template_dir):
             # 计算相对路径
             rel_path = os.path.relpath(root, template_dir)
@@ -51,18 +51,20 @@ class TemplateEngine:
                 target_dir = output_dir
             else:
                 target_dir = os.path.join(output_dir, rel_path)
-            
+
             # 创建目标目录
             makedirs_compat(target_dir)
-            
+
             # 处理文件
             for file in files:
                 if TemplateEngine._should_exclude(file, exclude_patterns):
                     continue
-                
+
                 template_file = os.path.join(root, file)
-                target_file = os.path.join(target_dir, file)
-                
+                # 对文件名也进行模板替换
+                rendered_filename = TemplateEngine.render_string(file, variables)
+                target_file = os.path.join(target_dir, rendered_filename)
+
                 TemplateEngine.render_file(template_file, target_file, variables)
     
     @staticmethod
