@@ -6,6 +6,7 @@ from ..config.project_config import ProjectConfig, ManifestConfig
 from ..utils.uuid_utils import generate_uuid, generate_random_string
 from ..utils.file_utils import makedirs_compat, copytree_compat
 from .template_engine import TemplateEngine
+from ..constants import FRAMEWORK_TEMPLATE_DIR_NAME, FRAMEWORK_PLUGIN_DIR_NAME
 
 
 class ProjectGenerator:
@@ -129,7 +130,7 @@ class ProjectGenerator:
     def _copy_project_templates(self, info):
         """复制项目模板"""
         scripts_path = os.path.join(info.project_path, info.behavior_folder, info.config.scripts_folder)
-        project_template_path = os.path.join(self.templates_path, "project", "template")
+        project_template_path = os.path.join(self.templates_path, "project", "scripts")
         
         if os.path.exists(project_template_path):
             TemplateEngine.render_directory(
@@ -139,25 +140,31 @@ class ProjectGenerator:
                 exclude_patterns=[r"manifest_.*\.json"]
             )
         
-        # 创建系统目录
+        # Ensure system directories exist; only create empty __init__ when template omitted it
         client_dir = os.path.join(scripts_path, "ClientSystem")
         server_dir = os.path.join(scripts_path, "ServerSystem")
-        makedirs_compat(client_dir)
-        makedirs_compat(server_dir)
-        
-        # 创建 __init__.py
+
         for system_dir in [client_dir, server_dir]:
-            with open(os.path.join(system_dir, "__init__.py"), 'w') as f:
-                f.write("")
+            makedirs_compat(system_dir)
+            init_path = os.path.join(system_dir, "__init__.py")
+            if not os.path.exists(init_path):
+                with open(init_path, 'w') as f:
+                    f.write("")
     
     def _copy_framework_templates(self, info):
-        """复制框架模板"""
+        """\u590d\u5236\u6846\u67b6\u6a21\u677f"""
         scripts_path = os.path.join(info.project_path, info.behavior_folder, info.config.scripts_folder)
         plugins_path = os.path.join(scripts_path, "plugins")
-        core_template_path = os.path.join(self.templates_path, "core", "plugins")
-        
-        if os.path.exists(core_template_path):
-            copytree_compat(core_template_path, plugins_path)
+        framework_template_path = os.path.join(self.templates_path, "framework", FRAMEWORK_TEMPLATE_DIR_NAME)
+
+        if os.path.exists(framework_template_path):
+            makedirs_compat(plugins_path)
+            # 创建plugins目录的__init__.py文件
+            plugins_init_path = os.path.join(plugins_path, "__init__.py")
+            if not os.path.exists(plugins_init_path):
+                with open(plugins_init_path, 'w') as f:
+                    f.write("")
+            copytree_compat(framework_template_path, os.path.join(plugins_path, FRAMEWORK_PLUGIN_DIR_NAME))
 
 
 class ProjectInfo:

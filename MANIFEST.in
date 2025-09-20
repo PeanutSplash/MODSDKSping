@@ -1,2 +1,1 @@
-graft modsdkspring/plugins
-graft modsdkspring/template
+graft modsdkspring/templates
